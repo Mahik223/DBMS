@@ -1,0 +1,61 @@
+Tables Used
+
+CREATE TABLE O_RollCall (
+    Roll_no  NUMBER(5),
+    Name     VARCHAR2(50)
+);
+
+CREATE TABLE N_RollCall (
+    Roll_no  NUMBER(5),
+    Name     VARCHAR2(50)
+);
+
+
+---
+
+Sample Data
+
+INSERT INTO O_RollCall VALUES (1, 'Ravi Patil');
+INSERT INTO O_RollCall VALUES (2, 'Sneha Joshi');
+INSERT INTO O_RollCall VALUES (3, 'Amit Kale');
+
+INSERT INTO N_RollCall VALUES (1, 'Ravi Patil');  -- Already exists
+
+
+---
+
+PL/SQL Program
+
+DECLARE
+    CURSOR c_roll(p_roll NUMBER) IS
+        SELECT Roll_no, Name FROM O_RollCall WHERE Roll_no = p_roll;
+
+    v_roll  O_RollCall.Roll_no%TYPE;
+    v_name  O_RollCall.Name%TYPE;
+    v_count NUMBER;
+BEGIN
+    -- Loop through all records of old table
+    FOR rec IN (SELECT Roll_no FROM O_RollCall) LOOP
+        OPEN c_roll(rec.Roll_no);
+        FETCH c_roll INTO v_roll, v_name;
+        CLOSE c_roll;
+
+        -- Check if record exists in new table
+        SELECT COUNT(*) INTO v_count
+        FROM N_RollCall
+        WHERE Roll_no = v_roll;
+
+        IF v_count = 0 THEN
+            INSERT INTO N_RollCall VALUES (v_roll, v_name);
+            DBMS_OUTPUT.PUT_LINE('Inserted: ' || v_roll || ' - ' || v_name);
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('Skipped (Already Exists): ' || v_roll);
+        END IF;
+
+
+
+SELECT * FROM N_RollCall;
+
+
+
+
