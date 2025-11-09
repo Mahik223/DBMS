@@ -1,0 +1,70 @@
+Tables Used
+
+CREATE TABLE Library (
+    Book_id     NUMBER(5) PRIMARY KEY,
+    BookName    VARCHAR2(100),
+    AuthorName  VARCHAR2(50),
+    Price       NUMBER(7,2)
+);
+
+CREATE TABLE Library_Audit (
+    Book_id     NUMBER(5),
+    BookName    VARCHAR2(100),
+    AuthorName  VARCHAR2(50),
+    Price       NUMBER(7,2),
+    Action_Date DATE,
+    Action_Type VARCHAR2(10)
+);
+
+
+---
+
+Sample Data
+
+INSERT INTO Library VALUES (1, 'DBMS Concepts', 'Korth', 550);
+INSERT INTO Library VALUES (2, 'Operating Systems', 'Galvin', 600);
+INSERT INTO Library VALUES (3, 'Computer Networks', 'Tanenbaum', 700);
+
+
+---
+
+Row-Level Trigger (Audit for UPDATE and DELETE)
+
+CREATE OR REPLACE TRIGGER trg_library_audit
+BEFORE UPDATE OR DELETE ON Library
+FOR EACH ROW
+BEGIN
+    IF UPDATING THEN
+        INSERT INTO Library_Audit
+        VALUES (:OLD.Book_id, :OLD.BookName, :OLD.AuthorName, :OLD.Price, SYSDATE, 'UPDATE');
+    ELSIF DELETING THEN
+        INSERT INTO Library_Audit
+        VALUES (:OLD.Book_id, :OLD.BookName, :OLD.AuthorName, :OLD.Price, SYSDATE, 'DELETE');
+    END IF;
+END;
+/
+
+
+---
+
+Testing the Trigger
+
+Update a Record
+
+UPDATE Library
+SET Price = 650
+WHERE Book_id = 1;
+
+Delete a Record
+
+DELETE FROM Library
+WHERE Book_id = 2;
+
+
+---
+
+Check Audit Table
+
+SELECT * FROM Library_Audit;
+
+
