@@ -1,0 +1,79 @@
+---
+
+Tables Used
+
+CREATE TABLE Borrower (
+    Roll_no      NUMBER(5) PRIMARY KEY,
+    Name         VARCHAR2(50),
+    DateOfIssue  DATE,
+    BookName     VARCHAR2(100),
+    Status       CHAR(1)
+);
+
+CREATE TABLE Fine (
+    Roll_no  NUMBER(5),
+    FineDate DATE,
+    Amount   NUMBER(6,2)
+);
+
+
+---
+
+Sample Data
+
+INSERT INTO Borrower VALUES (1, 'Ravi Patil', TO_DATE('2025-09-30','YYYY-MM-DD'), 'DBMS Concepts', 'I');
+INSERT INTO Borrower VALUES (2, 'Sneha Joshi', TO_DATE('2025-10-05','YYYY-MM-DD'), 'Operating Systems', 'I');
+
+
+---
+
+PL/SQL Block
+
+DECLARE
+    v_rollno     NUMBER(5);
+    v_bookname   VARCHAR2(100);
+    v_issue_date DATE;
+    v_days       NUMBER;
+    v_fine       NUMBER := 0;
+    e_no_record  EXCEPTION;
+BEGIN
+    -- Accept input
+    v_rollno := &Roll_no;
+    v_bookname := '&BookName';
+
+    -- Get date of issue
+    SELECT DateOfIssue INTO v_issue_date
+    FROM Borrower
+    WHERE Roll_no = v_rollno AND BookName = v_bookname;
+
+    -- Calculate number of days
+    v_days := SYSDATE - v_issue_date;
+
+    -- Calculate fine based on days
+    IF v_days > 30 THEN
+        v_fine := (v_days - 30) * 5;
+    ELSE
+        v_fine := 0;
+    END IF;
+
+    -- Update status if issued
+    UPDATE Borrower
+    SET Status = 'R'
+    WHERE Roll_no = v_rollno AND BookName = v_bookname;
+
+    -- Insert fine record
+    INSERT INTO Fine VALUES (v_rollno, SYSDATE, v_fine);
+
+    DBMS_OUTPUT.PUT_LINE('Fine Calculated Successfully!');
+    DBMS_OUTPUT.PUT_LINE('Roll No: ' || v_rollno);
+    DBMS_OUTPUT.PUT_LINE('Book: ' || v_bookname);
+    DBMS_OUTPUT.PUT_LINE('Days: ' || v_days);
+    DBMS_OUTPUT.PUT_LINE('Fine: ' || v_fine);
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Error: No such borrower or book found!');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error occurred: ' || SQLERRM);
+END;
+/
