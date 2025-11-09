@@ -1,0 +1,101 @@
+Entities and Attributes:
+
+1. Doctor
+
+Doctor_ID (Primary Key)
+
+Doctor_Name
+
+Specialization
+
+Phone_No
+
+Department
+
+
+
+2. Patient
+
+Patient_ID (Primary Key)
+
+Patient_Name
+
+Age
+
+Gender
+
+Address
+
+Phone_No
+
+
+
+3. Appointment
+
+Appointment_ID (Primary Key)
+
+Patient_ID (Foreign Key)
+
+Doctor_ID (Foreign Key)
+
+Appointment_Date
+
+Disease
+
+Status
+
+
+
+4. Treatment
+
+Treatment_ID (Primary Key)
+
+Patient_ID (Foreign Key)
+
+Doctor_ID (Foreign Key)
+
+Medicine
+
+Fees
+
+Treatment_Date
+
+
+
+5. Bill
+
+Bill_ID (Primary Key)
+
+Patient_ID (Foreign Key)
+
+Treatment_ID (Foreign Key)
+
+Total_Amount
+
+Bill_Date
+
+
+
+
+
+---
+
+Relationships:
+
+Relationship	Description	Type
+
+Doctor — Appointment	One doctor can have many appointments	1 : M
+Patient — Appointment	One patient can have many appointments	1 : M
+Patient — Treatment	One patient can have many treatments	1 : M
+Treatment — Bill	One treatment generates one bill	1 : 1
+
+
+
+---
+
+ER Diagram (Text Description):
+
+[DOCTOR]───< handles >───[APPOINTMENT]───< booked_by >───[PATIENT]
+      │                                 │
+      │                                 │
+      └────< treats >──────[TREATMENT]───< generates >───[BILL]
