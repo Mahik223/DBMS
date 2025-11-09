@@ -1,0 +1,64 @@
+CREATE TABLE Borrower (
+    Roll_no      NUMBER(5) PRIMARY KEY,
+    Name         VARCHAR2(50),
+    BookName     VARCHAR2(100),
+    DateOfIssue  DATE,
+    Status       CHAR(1)
+);
+
+
+INSERT INTO Borrower (Roll_no, Name, BookName, DateOfIssue, Status)
+VALUES (1, 'Ravi Patil', 'DBMS Concepts', TO_DATE('2025-10-10', 'YYYY-MM-DD'), 'I');
+
+
+INSERT INTO Borrower (Roll_no, Name, BookName, DateOfIssue, Status)
+VALUES (2, 'Sneha Joshi', 'Operating Systems', TO_DATE('2025-10-05', 'YYYY-MM-DD'), 'R');
+
+UPDATE Borrower
+SET Status = 'R'
+WHERE Roll_no = 1;
+
+
+UPDATE Borrower
+SET BookName = 'Advanced DBMS'
+WHERE Roll_no = 2;
+
+DELETE FROM Borrower
+WHERE Roll_no = 3;
+
+
+SELECT * FROM Borrower;
+
+
+SELECT Name, BookName
+FROM Borrower
+WHERE Status = 'I';
+
+
+SELECT Name, BookName
+FROM Borrower
+ORDER BY Name ASC;
+
+
+SELECT COUNT(*) AS Issued_Books
+FROM Borrower
+WHERE Status = 'I';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
