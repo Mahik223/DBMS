@@ -1,0 +1,118 @@
+Tables Used
+
+CREATE TABLE Borrower (
+    Roll_no      NUMBER(5) PRIMARY KEY,
+    Name         VARCHAR2(50),
+    BookName     VARCHAR2(100),
+    DateOfIssue  DATE,
+    Status       CHAR(1)
+);
+
+CREATE TABLE Fine (
+    Roll_no  NUMBER(5),
+    Amount   NUMBER(6,2)
+);
+
+
+---
+
+Sample Data
+
+INSERT INTO Borrower VALUES (1, 'Ravi Patil', 'DBMS Concepts', TO_DATE('2025-10-10','YYYY-MM-DD'), 'I');
+INSERT INTO Borrower VALUES (2, 'Sneha Joshi', 'Operating Systems', TO_DATE('2025-09-25','YYYY-MM-DD'), 'R');
+INSERT INTO Borrower VALUES (3, 'Amit Kale', 'Computer Networks', TO_DATE('2025-09-15','YYYY-MM-DD'), 'I');
+
+INSERT INTO Fine VALUES (2, 50);
+INSERT INTO Fine VALUES (3, 100);
+
+
+---
+
+✅ Queries
+
+1️⃣ Simple Join (Borrower with Fine)
+
+SELECT b.Name, b.BookName, f.Amount
+FROM Borrower b
+JOIN Fine f ON b.Roll_no = f.Roll_no;
+
+
+---
+
+2️⃣ Left Join (show all borrowers even if no fine)
+
+SELECT b.Name, b.BookName, NVL(f.Amount, 0) AS Fine_Amount
+FROM Borrower b
+LEFT JOIN Fine f ON b.Roll_no = f.Roll_no;
+
+
+---
+
+3️⃣ Find Borrowers Who Have a Fine > 50 (Subquery)
+
+SELECT Name, BookName
+FROM Borrower
+WHERE Roll_no IN (SELECT Roll_no FROM Fine WHERE Amount > 50);
+
+
+---
+
+4️⃣ Find Borrowers Without Any Fine (Subquery)
+
+SELECT Name
+FROM Borrower
+WHERE Roll_no NOT IN (SELECT Roll_no FROM Fine);
+
+
+---
+
+5️⃣ Display Borrowers Who Returned Books (Simple WHERE)
+
+SELECT Name, BookName
+FROM Borrower
+WHERE Status = 'R';
+
+
+---
+
+6️⃣ Display Borrower with Highest Fine (Subquery)
+
+SELECT Name, BookName
+FROM Borrower
+WHERE Roll_no = (SELECT Roll_no FROM Fine WHERE Amount = (SELECT MAX(Amount) FROM Fine));
+
+
+---
+
+7️⃣ Create a View for Issued Books
+
+CREATE VIEW Issued_Books AS
+SELECT Roll_no, Name, BookName, DateOfIssue
+FROM Borrower
+WHERE Status = 'I';
+
+
+---
+
+8️⃣ Display Data from View
+
+SELECT * FROM Issued_Books;
+
+
+---
+
+9️⃣ Display Borrower Name and Total Fine Amount
+
+SELECT b.Name, SUM(f.Amount) AS Total_Fine
+FROM Borrower b
+JOIN Fine f ON b.Roll_no = f.Roll_no
+GROUP BY b.Name;
+
+
+---
+
+🔟 Find Borrowers Issued Books After a Certain Date
+
+SELECT Name, BookName
+FROM Borrower
+WHERE DateOfIssue > TO_DATE('2025-09-20','YYYY-MM-DD');
