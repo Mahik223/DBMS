@@ -1,0 +1,85 @@
+1️⃣ Create Table
+
+CREATE TABLE Borrower (
+    Roll_no      NUMBER(5) PRIMARY KEY,
+    Name         VARCHAR2(50) NOT NULL,
+    BookName     VARCHAR2(100),
+    DateOfIssue  DATE,
+    Status       CHAR(1) CHECK (Status IN ('I','R'))
+);
+
+
+---
+
+2️⃣ Add a New Column
+
+ALTER TABLE Borrower
+ADD Phone_No VARCHAR2(15);
+
+
+---
+
+3️⃣ Modify Column Size
+
+ALTER TABLE Borrower
+MODIFY Name VARCHAR2(60);
+
+
+---
+
+4️⃣ Add a Constraint
+
+ALTER TABLE Borrower
+ADD CONSTRAINT chk_status CHECK (Status IN ('I','R'));
+
+
+---
+
+5️⃣ Create a View (only issued books)
+
+CREATE VIEW Issued_Books AS
+SELECT Roll_no, Name, BookName, DateOfIssue
+FROM Borrower
+WHERE Status = 'I';
+
+
+---
+
+6️⃣ Create an Index
+
+CREATE INDEX idx_borrower_name
+ON Borrower (Name);
+
+
+---
+
+7️⃣ Create a Sequence
+
+CREATE SEQUENCE seq_rollno
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
+
+
+---
+
+8️⃣ Create a Synonym
+
+CREATE SYNONYM brw FOR Borrower;
+
+
+---
+
+9️⃣ Rename the Table
+
+RENAME Borrower TO Borrower_Master;
+
+
+---
+
+🔟 Drop the Table
+
+DROP TABLE Borrower_Master;
+
+
+
