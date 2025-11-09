@@ -1,0 +1,71 @@
+Tables Used
+
+CREATE TABLE Stud_Marks (
+    Roll_no      NUMBER(5) PRIMARY KEY,
+    Name         VARCHAR2(50),
+    Total_Marks  NUMBER(5)
+);
+
+CREATE TABLE Result (
+    Roll_no  NUMBER(5),
+    Name     VARCHAR2(50),
+    Class    VARCHAR2(30)
+);
+
+
+---
+
+Sample Data
+
+INSERT INTO Stud_Marks VALUES (1, 'Ravi Patil', 1200);
+INSERT INTO Stud_Marks VALUES (2, 'Sneha Joshi', 950);
+INSERT INTO Stud_Marks VALUES (3, 'Amit Kale', 860);
+
+
+---
+
+PL/SQL Procedure
+
+CREATE OR REPLACE PROCEDURE proc_Grade IS
+    v_class VARCHAR2(30);
+BEGIN
+    FOR rec IN (SELECT * FROM Stud_Marks) LOOP
+        IF rec.Total_Marks BETWEEN 990 AND 1500 THEN
+            v_class := 'Distinction';
+        ELSIF rec.Total_Marks BETWEEN 900 AND 989 THEN
+            v_class := 'First Class';
+        ELSIF rec.Total_Marks BETWEEN 825 AND 899 THEN
+            v_class := 'Higher Second Class';
+        ELSE
+            v_class := 'Fail';
+        END IF;
+
+        INSERT INTO Result VALUES (rec.Roll_no, rec.Name, v_class);
+    END LOOP;
+
+    DBMS_OUTPUT.PUT_LINE('Student grades inserted successfully!');
+END;
+/
+
+
+---
+
+To Execute Procedure
+
+BEGIN
+    proc_Grade;
+END;
+/
+
+
+---
+
+Check Result Table
+
+SELECT * FROM Result;
+
+
+
+
+
+
